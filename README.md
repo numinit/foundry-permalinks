@@ -16,6 +16,14 @@ to the clipboard if possible, rather than the ID.
 
 Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlemage Brewery](https://www.battlemagebrewing.com/) in Vista, CA.
 
+## Changelog
+
+- v1.0.4: Add settings: useSlugs (scope world, default true) and overrideCopyId (scope user, default true). These let you tune whether slugs should be enabled on a world basis, and whether individual users should default to the existing behavior of copying the ID instead of the permalink.
+- v1.0.3: Increase max slug length to 48
+- v1.0.2: Add slugs
+- v1.0.1: Increase reliability of generating links
+- v1.0.0: Initial release
+
 ## Known issues
 
 Login trashes the permalink. :-(
