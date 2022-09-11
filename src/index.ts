@@ -46,14 +46,14 @@ Hooks.once("ready", async () => {
 const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentIdLink;
 (DocumentSheet.prototype as any)._createDocumentIdLink = function(html: JQuery) {
     /**
-     * Returns a slug for the specified title. Up to 32 characters will be returned for brevity.
+     * Returns a slug for the specified title. Up to 48 characters will be returned for brevity.
      * 'Character Name' -> Character-Name
      * "Someone's Journal" -> Someones-Journal
      * @param title the title
      * @return the slug
      */
     function createSlug(title: string): string {
-        return title.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]+/gi, '').slice(0, 32).replace(/-$/g, '');
+        return title.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]+/gi, '').slice(0, 48).replace(/-$/g, '');
     }
 
     /**
