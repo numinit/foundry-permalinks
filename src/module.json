@@ -5,13 +5,15 @@
 	"version": "1.0.0",
 	"authors": ["numinit"],
 	"scripts": ["bundle.js"],
-	"styles": ["foundry-permalinks.css"],
+	"styles": [
+		"foundry-permalinks.css"
+	],
 	"languages": [],
-    "compatibility": {
-        "minimum": "10",
-        "verified": "10"
-    },
+	"compatibility": {
+		"minimum": "10",
+		"verified": "10"
+	},
 	"url": "https://github.com/numinit/foundry-permalinks",
-	"manifest": "https://raw.githubusercontent.com/numinit/foundry-permalinks/master/Source/module.json",
-	"download": "https://raw.githubusercontent.com/numinit/foundry-permalinks/master/Package/foundry-permalinks-v1.0.0.zip"
+	"manifest": "https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json",
+	"download": "https://raw.githubusercontent.com/numinit/foundry-permalinks/v1.0.0/dist/foundry-permalinks-v1.0.0.zip"
 }
