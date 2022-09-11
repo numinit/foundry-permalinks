@@ -18,6 +18,7 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 
 ## Changelog
 
+- v1.0.5: Fix issue where settings would not load on game launch.
 - v1.0.4: Add settings: useSlugs (scope world, default true) and overrideCopyId (scope user, default true). These let you tune whether slugs should be enabled on a world basis, and whether individual users should default to the existing behavior of copying the ID instead of the permalink.
 - v1.0.3: Increase max slug length to 48
 - v1.0.2: Add slugs
