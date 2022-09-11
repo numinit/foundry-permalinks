@@ -37,7 +37,7 @@ import {
 } from "typescript";
 import less from "gulp-less";
 
-import Logger from "./Source/Utils/Logger";
+import Log from "./src/utils/Log";
 import {ModuleData} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/packages.mjs";
 import browserify from "browserify";
 import tsify = require("tsify");
@@ -72,8 +72,8 @@ const getManifest = (): Manifest | null => {
 		name: ""
 	};
 
-	if (fs.existsSync("Source")) {
-		json.root = "Source";
+	if (fs.existsSync("src")) {
+		json.root = "src";
 	} else {
 		json.root = "dist";
 	}
@@ -144,14 +144,14 @@ function buildTS() {
 		.pipe(tsConfig());
 
 	return res.js
-		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/Source' }))
+		.pipe(sourcemaps.write('', { debug: debug, includeContent: true, sourceRoot: './ts/src' }))
 		.pipe(gulp.dest("dist"));
 }
 
 const bundleModule = () => {
 	const debug = argv.dbg || argv.debug;
-	const bsfy = browserify(path.join(__dirname, "Source/index.ts"), { debug: debug });
-	return bsfy.on('error', Logger.Err)
+	const bsfy = browserify(path.join(__dirname, "src/index.ts"), { debug: debug });
+	return bsfy.on('error', Log.e)
 		.plugin(tsify)
 		.bundle()
 		.pipe(source(path.join("dist", "bundle.js")))
@@ -163,7 +163,7 @@ const bundleModule = () => {
 }
 
 const buildLess = () => {
-	return gulp.src("Source/Style/*.less").pipe(less()).pipe(gulp.dest("dist"));
+	return gulp.src("src/css/*.less").pipe(less()).pipe(gulp.dest("dist"));
 }
 
 const copyFiles = async() => {
@@ -197,16 +197,16 @@ const copyFiles = async() => {
 		});
 	};
 	try {
-		await fs.copyFile(path.join("Source/module.json"), path.join("dist/module.json"));
-		if (!fs.existsSync(path.resolve(__dirname, "Assets")))
+		await fs.copyFile(path.join("src/module.json"), path.join("dist/module.json"));
+		if (!fs.existsSync(path.resolve(__dirname, "assets")))
 			return Promise.resolve();
 
 		const filter = (src: string, dest: string): boolean => {
-			Logger.Ok("Copying file: " + dest);
+			Log.i("Copying file: " + dest);
 			return true;
 		}
 
-		fs.copySync(path.resolve(__dirname, "Assets"), path.resolve(__dirname, "dist"), { overwrite: true, filter });
+		fs.copySync(path.resolve(__dirname, "assets"), path.resolve(__dirname, "dist"), { overwrite: true, filter });
 		return Promise.resolve();
 	} catch (err) {
 		await Promise.reject(err);
@@ -214,9 +214,10 @@ const copyFiles = async() => {
 }
 
 const cleanDist = async () => {
-	if (argv.dbg || argv.debug)
+	if (argv.dbg || argv.debug) {
 		return;
-	Logger.Log("Cleaning dist file clutter");
+    }
+	Log.i("Cleaning dist file clutter");
 
 	const files: string[] = [];
 	const getFiles = async (dir: string) => {
@@ -237,7 +238,7 @@ const cleanDist = async () => {
 		if (file.endsWith("bundle.js") || file.endsWith(".css") || file.endsWith("module.json"))
 			continue;
 
-		Logger.Warn("Cleaning " + path.relative(process.cwd(), file));
+		Log.w("Cleaning " + path.relative(process.cwd(), file));
 		await fs.promises.unlink(file);
 	}
 }
@@ -246,9 +247,9 @@ const cleanDist = async () => {
  * Watch for changes for each build step
  */
 const buildWatch = () => {
-	gulp.watch("Source/**/*.ts", { ignoreInitial: false }, gulp.series(buildTS, bundleModule));
-	gulp.watch("Source/**/*.less", { ignoreInitial: false }, buildLess);
-	gulp.watch(["Source/fonts", "Source/lang", "Source/templates", "Source/*.json"], { ignoreInitial: false }, copyFiles);
+	gulp.watch("src/**/*.ts", { ignoreInitial: false }, gulp.series(buildTS, bundleModule));
+	gulp.watch("src/**/*.less", { ignoreInitial: false }, buildLess);
+	gulp.watch(["src/fonts", "src/lang", "src/templates", "src/*.json"], { ignoreInitial: false }, copyFiles);
 }
 
 /********************/
@@ -279,9 +280,9 @@ const linkUserData = async () => {
 
 	let destDir;
 	try {
-		if (fs.existsSync(path.resolve(".", "dist", "module.json")) || fs.existsSync(path.resolve(".", "Source", "module.json"))) {
+		if (fs.existsSync(path.resolve(".", "dist", "module.json")) || fs.existsSync(path.resolve(".", "src", "module.json"))) {
 			destDir = "modules";
-		} else if (fs.existsSync(path.resolve(".", "dist", "system.json")) || fs.existsSync(path.resolve(".", "Source", "system.json"))) {
+		} else if (fs.existsSync(path.resolve(".", "dist", "system.json")) || fs.existsSync(path.resolve(".", "src", "system.json"))) {
 			destDir = "systems";
 		} else {
 			throw Error(`Could not find module.json or system.json`);
@@ -299,11 +300,11 @@ const linkUserData = async () => {
 		}
 
 		if (argv.clean || argv.c) {
-			Logger.Warn(`Removing build in ${linkDir}`);
+			Log.w(`Removing build in ${linkDir}`);
 
 			fs.unlinkSync(linkDir);
 		} else if (!fs.existsSync(linkDir)) {
-			Logger.Ok(`Copying build to ${linkDir}`);
+			Log.i(`Copying build to ${linkDir}`);
 			fs.symlinkSync(path.resolve("./dist"), linkDir);
 		}
 		return Promise.resolve();
@@ -322,7 +323,7 @@ const linkUserData = async () => {
 async function packageBuild() {
 	const manifest = getManifest();
 	if (manifest === null) {
-		Logger.Err("Manifest file could not be loaded.");
+		Log.e("Manifest file could not be loaded.");
 		throw Error();
 	}
 
@@ -330,7 +331,7 @@ async function packageBuild() {
 		try {
 			// Remove the package dir without doing anything else
 			if (argv.clean || argv.c) {
-				Logger.Warn("Removing all packaged files");
+				Log.w("Removing all packaged files");
 				fs.rmSync("dist", { force: true, recursive: true });
 				return;
 			}
@@ -345,8 +346,8 @@ async function packageBuild() {
 			const zip = archiver("zip", { zlib: { level: 9 } });
 
 			zipFile.on("close", () => {
-				Logger.Ok(zip.pointer() + " total bytes");
-				Logger.Ok(`Zip file ${zipName} has been written`);
+				Log.i(zip.pointer() + " total bytes");
+				Log.i(`Zip file ${zipName} has been written`);
 				return resolve(true);
 			});
 
@@ -426,7 +427,7 @@ const updateManifest = (cb: any) => {
 			return cb(Error("Error: Target version is identical to current version."));
 		}
 
-		Logger.Ok(`Updating version number to '${targetVersion}'`);
+		Log.i(`Updating version number to '${targetVersion}'`);
 
 		packageJson.version = targetVersion;
 		manifest.file.version = targetVersion;
@@ -458,7 +459,7 @@ const gitTaskManifest = (cb: gulp.TaskFunctionCallback) => {
 	if (!manifest)
 		return cb(Error("could not load manifest."));
 
-	return gulp.src([`package.json`, `Source/module.json`])
+	return gulp.src([`package.json`, `src/module.json`])
 		.pipe(git.add({ args: "--no-all -f" }))
 		.pipe(git.commit(`v${manifest.file.version}`, { args: "-a", disableAppendPaths: true }))
 }

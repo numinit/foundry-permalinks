@@ -1,5 +1,5 @@
 {
-    "moduleName": "Lazrius' FoundryVTT Template",
-    "repository": "https://github.com/Lazrius/FoundryVTT-Typescript-Module-Template",
-    "rawURL": "https://raw.githubusercontent.com/Lazrius/FoundryVTT-Typescript-Module-Template"
+    "moduleName": "Foundry Permalinks",
+    "repository": "https://github.com/numinit/foundry-permalinks",
+    "rawURL": "https://raw.githubusercontent.com/numinit/foundry-permalinks"
 }

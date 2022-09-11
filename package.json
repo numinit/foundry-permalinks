@@ -1,5 +1,5 @@
 {
-	"name": "lazrius-foundry-template",
+	"name": "foundry-permalinks",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
@@ -10,8 +10,8 @@
 		"build:watch": "gulp watch",
 		"clean": "gulp clean && gulp link --clean"
 	},
-	"author": "Lazrius",
-	"license": "GPLv3",
+	"author": "numinit",
+	"license": "ISC",
 	"devDependencies": {
 		"@babel/core": "^7.15.0",
 		"@league-of-foundry-developers/foundry-vtt-types": "^0.8.9-2",

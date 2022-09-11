@@ -1,6 +1,6 @@
 import Globals from "./Globals";
 
-const PreloadTemplates = async (): Promise<Handlebars.TemplateDelegate<any>[]> => {
+const preloadTemplates = async (): Promise<Handlebars.TemplateDelegate<any>[]> => {
 	const rootPath = `${Globals.IsModule ? "modules" : "systems"}/${Globals.ModuleName}/templates/`;
 	// Place relative paths in array below, e.g.:
 	// const templates = [ rootPath + "actor/actor-sheet.hbs" ]
@@ -9,4 +9,4 @@ const PreloadTemplates = async (): Promise<Handlebars.TemplateDelegate<any>[]> =
 	return loadTemplates(templates);
 }
 
-export default PreloadTemplates;
+export default preloadTemplates;

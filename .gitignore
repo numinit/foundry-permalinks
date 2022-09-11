@@ -1,7 +1,6 @@
 node_modules/
 package-lock.json
-*.lock
 .idea/
-Source/packs/
-Source/generators/
+src/packs/
+src/generators/
 dist
