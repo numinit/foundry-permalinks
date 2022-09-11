@@ -2,6 +2,6 @@ import {ModuleData} from "@league-of-foundry-developers/foundry-vtt-types/src/fo
 import Globals from "../Globals";
 
 export const getModuleInformation = async (): Promise<ModuleData> => {
-	const module = await fetch(Globals.IsModule ? "modules/" : "systems/" + Globals.ModuleName + "/module.json")
-	return await module.json();
+    const module = await fetch(Globals.IsModule ? "modules/" : "systems/" + Globals.ModuleName + "/module.json")
+    return await module.json();
 };

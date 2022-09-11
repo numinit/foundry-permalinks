@@ -1,10 +1,10 @@
 import Log from "./utils/Log";
 import preloadTemplates from "./PreloadTemplates";
-import { registerSettings } from "./utils/Settings";
+import { registerSettings, getSetting, Setting } from "./utils/Settings";
 
 Hooks.once("init", async () => {
-	registerSettings();
-	await preloadTemplates();
+    registerSettings();
+    await preloadTemplates();
 });
 
 Hooks.once("setup", () => {
@@ -62,15 +62,18 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
      * @param title the title
      */
     function setUuid(uuid: string, title: string): void {
-        const slug: string = createSlug(title);
-        window.history.replaceState({}, '', `?@=${encodeURIComponent(uuid)}${slug ? '#' + encodeURIComponent(slug) : ''}`);
+        let query: string = `?@=${encodeURIComponent(uuid)}`;
+        if (getSetting(Setting.USE_SLUG)) {
+            const slug: string = createSlug(title);
+            query += (slug ? '#' + encodeURIComponent(slug) : '');
+        }
+        window.history.replaceState({}, '', query);
     }
 
     /**
      * Copies the UUID to the clipboard if possible.
-     * @param uuid the UUID
      */
-    function copyUuid(uuid: string): void {
+    function copyUuid(): void {
         if (navigator?.clipboard?.writeText) {
             navigator.clipboard.writeText(window.location.href);
         }
@@ -80,19 +83,28 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
     const idLink = html.find('.document-id-link');
 
     if (idLink) {
-        const node: HTMLElement = idLink.get(0)!;
-        const newNode: Node = node.cloneNode(true);
-        newNode.addEventListener('click', (event: Event) => {
-            event.preventDefault();
+        let node: Node = idLink.get(0)!;
+        const overrideCopyId: boolean = getSetting(Setting.OVERRIDE_COPY_ID);
+        if (overrideCopyId) {
+            const newNode: Node = node.cloneNode(true);
+            node.parentNode!.replaceChild(newNode, node);
+            node = newNode;
+        }
+
+        node.addEventListener('click', (event: Event) => {
             setUuid(this.object.uuid, this.title);
-            copyUuid(this.object.uuid);
+            if (overrideCopyId) {
+                event.preventDefault();
+                copyUuid();
+            }
         });
-        newNode.addEventListener('contextmenu', (event: Event) => {
-            event.preventDefault();
+        node.addEventListener('contextmenu', (event: Event) => {
             setUuid(this.object.uuid, this.title);
-            copyUuid(this.object.uuid);
+            if (overrideCopyId) {
+                event.preventDefault();
+                copyUuid();
+            }
         });
-        node.parentNode!.replaceChild(newNode, node);
 
         setUuid(this.object.uuid, this.title);
     }
