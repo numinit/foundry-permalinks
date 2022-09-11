@@ -55,30 +55,49 @@ class Settings {
         assert(game instanceof Game);
         const g = game as Game;
         this.settingsMap.forEach((value, key) => {
+            // Register the on-change listener.
             value.onChange = (settingValue: any) => {
                 Log.i(`Setting ${key} changed to ${JSON.stringify(settingValue)}`);
                 this.settingValues.set(key, settingValue);
             };
             g.settings.register(Globals.ModuleName, key, value);
+
+            // Populate the initial value based on the default.
+            let initialValue = g.settings.get(Globals.ModuleName, key);
+            if (initialValue === undefined || initialValue === null) {
+                initialValue = value.default;
+            }
+            this.settingValues.set(key, initialValue);
+
+            Log.i(`Setting ${key} registered with initial value ${JSON.stringify(initialValue)}`);
         });
 
         this.settingsRegistered = true;
     }
 }
 
+/**
+ * Registers settings.
+ */
 export const registerSettings = (): void => Settings.getInstance().registerSettings();
 
+/**
+ * Valid settings.
+ */
 export enum Setting {
     OVERRIDE_COPY_ID = 'overrideCopyId',
     USE_SLUG = 'useSlug'
 }
 
+/**
+ * Gets a setting.
+ */
 export const getSetting = <T>(setting: Setting): T => {
     const settings = Settings.getInstance();
     if (settings.settingValues.has(setting)) {
         return settings.settingValues.get(setting)! as unknown as T;
     } else if (settings.settingsMap.has(setting)) {
-        return settings.settingsMap.get(setting)!.default! as unknown as T;
+        return settings.settingsMap.get(setting)!.default as unknown as T;
     } else {
         throw new Error(`invalid setting: ${setting}`);
     }
