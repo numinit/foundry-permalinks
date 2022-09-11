@@ -1,6 +1,10 @@
 # FoundryVTT Permalinks
 
-![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/permalinks.png)
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/actor.png)
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/item.png)
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/journal.png)
 
 [Manifest URL](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json)
 
