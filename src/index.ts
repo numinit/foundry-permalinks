@@ -26,7 +26,7 @@ Hooks.once("ready", async () => {
         uuid = extractUuid(new URLSearchParams(window.location.search));
     }
 
-    if (document.referrer) {
+    if (!uuid && document.referrer) {
         const referrerUrl: URL = new URL(document.referrer);
         if (referrerUrl.search) {
             uuid = extractUuid(new URLSearchParams(referrerUrl.search));
@@ -43,19 +43,26 @@ Hooks.once("ready", async () => {
 // Hook _createDocumentIdLink.
 const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentIdLink;
 (DocumentSheet.prototype as any)._createDocumentIdLink = function(html: JQuery) {
-    const ret: any = originalDocumentIdLink.call(this, html);
-    const idLink = html.find('.document-id-link');
-
     /**
      * Sets the UUID in the current history node.
      * @param uuid the UUID
      */
     function setUuid(uuid: string) {
-        window.history.pushState('', '', `?@=${encodeURIComponent(uuid)}`);
+        window.history.replaceState({}, '', `?@=${encodeURIComponent(uuid)}`);
+    }
+
+    /**
+     * Copies the UUID to the clipboard if possible.
+     * @param uuid the UUID
+     */
+    function copyUuid(uuid: string) {
         if (navigator?.clipboard?.writeText) {
             navigator.clipboard.writeText(window.location.href);
         }
     }
+
+    const ret: any = originalDocumentIdLink.call(this, html);
+    const idLink = html.find('.document-id-link');
 
     if (idLink) {
         const node: HTMLElement = idLink.get(0)!;
@@ -63,12 +70,17 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
         newNode.addEventListener('click', (event: Event) => {
             event.preventDefault();
             setUuid(this.object.uuid);
+            copyUuid(this.object.uuid);
         });
         newNode.addEventListener('contextmenu', (event: Event) => {
             event.preventDefault();
             setUuid(this.object.uuid);
+            copyUuid(this.object.uuid);
         });
         node.parentNode!.replaceChild(newNode, node);
+
+        setUuid(this.object.uuid);
     }
+
     return ret;
 };
