@@ -15,6 +15,8 @@ Hooks.once("setup", () => {
 Hooks.once("ready", async () => {
     /**
      * Extracts the UUID from a URLSearchParams.
+     * @param params the params
+     * @return the UUID or null
      */
     function extractUuid(params: URLSearchParams): string|null {
         return params.get('@') || null;
@@ -44,18 +46,31 @@ Hooks.once("ready", async () => {
 const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentIdLink;
 (DocumentSheet.prototype as any)._createDocumentIdLink = function(html: JQuery) {
     /**
+     * Returns a slug for the specified title. Up to 32 characters will be returned for brevity.
+     * 'Character Name' -> Character-Name
+     * "Someone's Journal" -> Someones-Journal
+     * @param title the title
+     * @return the slug
+     */
+    function createSlug(title: string): string {
+        return title.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]+/gi, '').slice(0, 32).replace(/-$/g, '');
+    }
+
+    /**
      * Sets the UUID in the current history node.
      * @param uuid the UUID
+     * @param title the title
      */
-    function setUuid(uuid: string) {
-        window.history.replaceState({}, '', `?@=${encodeURIComponent(uuid)}`);
+    function setUuid(uuid: string, title: string): void {
+        const slug: string = createSlug(title);
+        window.history.replaceState({}, '', `?@=${encodeURIComponent(uuid)}${slug ? '#' + encodeURIComponent(slug) : ''}`);
     }
 
     /**
      * Copies the UUID to the clipboard if possible.
      * @param uuid the UUID
      */
-    function copyUuid(uuid: string) {
+    function copyUuid(uuid: string): void {
         if (navigator?.clipboard?.writeText) {
             navigator.clipboard.writeText(window.location.href);
         }
@@ -69,17 +84,17 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
         const newNode: Node = node.cloneNode(true);
         newNode.addEventListener('click', (event: Event) => {
             event.preventDefault();
-            setUuid(this.object.uuid);
+            setUuid(this.object.uuid, this.title);
             copyUuid(this.object.uuid);
         });
         newNode.addEventListener('contextmenu', (event: Event) => {
             event.preventDefault();
-            setUuid(this.object.uuid);
+            setUuid(this.object.uuid, this.title);
             copyUuid(this.object.uuid);
         });
         node.parentNode!.replaceChild(newNode, node);
 
-        setUuid(this.object.uuid);
+        setUuid(this.object.uuid, this.title);
     }
 
     return ret;
