@@ -5,8 +5,12 @@
 When you open a window that can have a permalink generated, the window's URL
 is replaced with the link.
 
+Requires Foundry 10.
+
 Clicking the "Copy document id" link copies the permalink to the clipboard
 if possible, rather than the ID.
+
+[Manifest URL](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json)
 
 ## Known issues
 
