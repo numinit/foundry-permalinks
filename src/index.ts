@@ -80,10 +80,9 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
     }
 
     const ret: any = originalDocumentIdLink.call(this, html);
-    const idLink = html.find('.document-id-link');
+    let node: Node | undefined = html.find('.document-id-link').get(0);
 
-    if (idLink) {
-        let node: Node = idLink.get(0)!;
+    if (node) {
         const overrideCopyId: boolean = getSetting(Setting.OVERRIDE_COPY_ID);
         if (overrideCopyId) {
             const newNode: Node = node.cloneNode(true);
