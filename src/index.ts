@@ -1,6 +1,41 @@
 import Log from "./utils/Log";
 import preloadTemplates from "./PreloadTemplates";
-import { registerSettings, getSetting, Setting } from "./utils/Settings";
+import { registerSettings, getSetting, Setting, CopyMode } from "./utils/Settings";
+
+/**
+ * Returns a slug for the specified title. Up to 48 characters will be returned for brevity.
+ * 'Character Name' -> Character-Name
+ * "Someone's Journal" -> Someones-Journal
+ * @param title the title
+ * @return the slug
+ */
+function createSlug(title: string): string {
+    return title.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]+/gi, '').slice(0, 48).replace(/-$/g, '');
+}
+
+/**
+ * Sets the UUID in the current history node.
+ * @param uuid the UUID
+ * @param title the title
+ */
+function setUuid(uuid: string, title: string): void {
+    let query: string = `?@=${encodeURIComponent(uuid)}`;
+    if (getSetting(Setting.USE_SLUG)) {
+        const slug: string = createSlug(title);
+        query += (slug ? '#' + encodeURIComponent(slug) : '');
+    }
+    window.history.replaceState({}, '', query);
+}
+
+/**
+ * Copies the UUID to the clipboard if possible.
+ * @param uuid the uuid to copy instead of window.location.href
+ */
+function copyUuid(uuid?: string): void {
+    if (navigator?.clipboard?.writeText) {
+        navigator.clipboard.writeText(uuid || window.location.href);
+    }
+}
 
 Hooks.once("init", async () => {
     registerSettings();
@@ -42,49 +77,49 @@ Hooks.once("ready", async () => {
     }
 });
 
-// Hook _createDocumentIdLink.
+/**
+ * Callback for adding buttons to documents, items, and actors.
+ * @param sheet the sheet
+ * @param buttons the buttons
+ */
+const callback = (sheet: any, buttons: any) => {
+    if (getSetting(Setting.COPY_MODE) !== CopyMode.NEW_BUTTON) {
+        return;
+    }
+
+    buttons.unshift({
+        label: "Permalink",
+        class: "export-pdf",
+        icon: "fas fa-link",
+        onclick: () => {
+            // Ensure that the URL is correct before copying.
+            setUuid(sheet.object.uuid, sheet.title);
+            copyUuid();
+        }
+    });
+};
+
+Hooks.on("getDocumentSheetHeaderButtons", callback);
+Hooks.on("getItemSheetHeaderButtons", callback);
+Hooks.on("getActorSheetHeaderButtons", callback);
+Hooks.on("getCardStackSheetHeaderButtons", callback);
+Hooks.on("getSceneSheetHeaderButtons", callback);
+Hooks.on("getCompendiumCollectionSheetHeaderButtons", callback);
+
 const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentIdLink;
+
+/**
+ * Creates the document ID link.
+ * @param html the HTML
+ */
 (DocumentSheet.prototype as any)._createDocumentIdLink = function(html: JQuery) {
-    /**
-     * Returns a slug for the specified title. Up to 48 characters will be returned for brevity.
-     * 'Character Name' -> Character-Name
-     * "Someone's Journal" -> Someones-Journal
-     * @param title the title
-     * @return the slug
-     */
-    function createSlug(title: string): string {
-        return title.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]+/gi, '').slice(0, 48).replace(/-$/g, '');
-    }
-
-    /**
-     * Sets the UUID in the current history node.
-     * @param uuid the UUID
-     * @param title the title
-     */
-    function setUuid(uuid: string, title: string): void {
-        let query: string = `?@=${encodeURIComponent(uuid)}`;
-        if (getSetting(Setting.USE_SLUG)) {
-            const slug: string = createSlug(title);
-            query += (slug ? '#' + encodeURIComponent(slug) : '');
-        }
-        window.history.replaceState({}, '', query);
-    }
-
-    /**
-     * Copies the UUID to the clipboard if possible.
-     */
-    function copyUuid(): void {
-        if (navigator?.clipboard?.writeText) {
-            navigator.clipboard.writeText(window.location.href);
-        }
-    }
-
     const ret: any = originalDocumentIdLink.call(this, html);
-    let node: Node | undefined = html.find('.document-id-link').get(0);
 
+    const copyMode: CopyMode = getSetting(Setting.COPY_MODE);
+    let node: Node | undefined = html.find('.document-id-link').get(0);
     if (node) {
-        const overrideCopyId: boolean = getSetting(Setting.OVERRIDE_COPY_ID);
-        if (overrideCopyId) {
+        if (copyMode === CopyMode.OVERRIDE_COPY_ID
+            || copyMode === CopyMode.SHIFT_OVERRIDE_COPY_ID) {
             const newNode: Node = node.cloneNode(true);
             node.parentNode!.replaceChild(newNode, node);
             node = newNode;
@@ -92,16 +127,22 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
 
         node.addEventListener('click', (event: Event) => {
             setUuid(this.object.uuid, this.title);
-            if (overrideCopyId) {
+            if (copyMode === CopyMode.OVERRIDE_COPY_ID
+                || copyMode === CopyMode.SHIFT_OVERRIDE_COPY_ID && (event as KeyboardEvent).shiftKey) {
                 event.preventDefault();
                 copyUuid();
+            } else {
+                copyUuid(this.object.uuid);
             }
         });
         node.addEventListener('contextmenu', (event: Event) => {
             setUuid(this.object.uuid, this.title);
-            if (overrideCopyId) {
+            if (copyMode === CopyMode.OVERRIDE_COPY_ID
+                || copyMode === CopyMode.SHIFT_OVERRIDE_COPY_ID) {
                 event.preventDefault();
                 copyUuid();
+            } else {
+                copyUuid(this.object.uuid);
             }
         });
 
