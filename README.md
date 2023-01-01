@@ -25,7 +25,7 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 ### v1.1
 
 - v1.1.0:
-    - Fix issue (#1) that could cause an exception to be thrown if the ID permalink wasn't found.
+    - [#1](https://github.com/numinit/foundry-permalinks/pull/1): Exception could be thrown if the ID permalink wasn't found
     - Change default mode of operation to a new "Permalink button.
 
 ### v1.0
