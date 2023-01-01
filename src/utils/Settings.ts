@@ -2,15 +2,36 @@ import assert from "assert"
 import Globals from "../Globals";
 import Log from "./Log";
 
+/**
+ * Mode for copying permalinks.
+ */
 export enum CopyMode {
+    /**
+     * Never copy permalinks.
+     */
     NONE = 'none',
+
+    /**
+     * Override the Copy ID button.
+     */
     OVERRIDE_COPY_ID = 'overrideCopyId',
+
+    /**
+     * Hold Shift while clicking the Copy ID button.
+     */
     SHIFT_OVERRIDE_COPY_ID = 'shiftOverrideCopyId',
+
+    /**
+     * Create a new button for copying the link.
+     */
     NEW_BUTTON = 'newButton'
 }
 
+/**
+ * Settings manager.
+ */
 class Settings {
-    readonly settingsMap: Map<Setting, ClientSettings.PartialSetting> = new Map([
+    readonly settingsMap: Map<Setting, any> = new Map([
         [
             Setting.COPY_MODE,
             {
@@ -25,7 +46,7 @@ class Settings {
                     [CopyMode.SHIFT_OVERRIDE_COPY_ID]: 'Shift + Copy ID',
                     [CopyMode.NEW_BUTTON]: 'New Button'
                 },
-                default: CopyMode.OVERRIDE_COPY_ID
+                default: CopyMode.NEW_BUTTON
             }
         ],
         [
@@ -58,14 +79,24 @@ class Settings {
 
     private settingsRegistered = false;
 
+    /**
+     * The Settings instance.
+     */
+    private static instance: Settings;
+
+    /**
+     * Initializes the Settings instance.
+     */
     private constructor() {
         Log.i("Loading configuration settings.");
         assert(game instanceof Game);
         this.game = game as Game;
     }
 
-    private static instance: Settings;
-
+    /**
+     * Gets the global Settings instance.
+     * @return Settings
+     */
     public static getInstance(): Settings {
         if (Settings.instance) {
             return Settings.instance;
@@ -75,6 +106,9 @@ class Settings {
         return Settings.instance;
     }
 
+    /**
+     * Registers settings.
+     */
     public registerSettings(): void {
         if (this.settingsRegistered) {
             return;
@@ -116,17 +150,28 @@ class Settings {
 }
 
 /**
- * Registers settings.
+ * Global export for registering settings.
  */
 export const registerSettings = (): void => Settings.getInstance().registerSettings();
 
 /**
- * Valid settings.
+ * All valid setting keys.
  */
 export enum Setting {
+    /**
+     * The copy mode.
+     */
     COPY_MODE = 'copyMode',
-    /** @deprecated use COPY_MODE instead */
+
+    /**
+     * Override the copy ID button.
+     * @deprecated use COPY_MODE instead
+     */
     OVERRIDE_COPY_ID = 'overrideCopyId',
+
+    /**
+     * Use slugs in permalinks.
+     */
     USE_SLUG = 'useSlug'
 }
 
