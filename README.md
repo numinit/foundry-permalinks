@@ -3,8 +3,8 @@
 [Manifest URL](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json)
 
 **TL;DR:** When you open a window that can have a permalink generated, the window's URL
-is replaced with the link. Clicking the "Copy document id" link copies the permalink
-to the clipboard if possible, rather than the ID.
+is replaced with the link. Clicking the "Copy document id" link or the button (depending on
+configuration) copies the permalink to the clipboard if possible, rather than the ID.
 
 **Supported versions**: Requires Foundry 10 to work.
 
@@ -26,7 +26,7 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 
 - v1.1.0:
     - [#1](https://github.com/numinit/foundry-permalinks/pull/1): Exception could be thrown if the ID permalink wasn't found
-    - Change default mode of operation to a new "Permalink button.
+    - Change default mode of operation to a new "Permalink" button.
 
 ### v1.0
 
