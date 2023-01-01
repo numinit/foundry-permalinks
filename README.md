@@ -1,11 +1,5 @@
 # FoundryVTT Permalinks
 
-![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/actor.png)
-
-![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/item.png)
-
-![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/journal.png)
-
 [Manifest URL](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json)
 
 **TL;DR:** When you open a window that can have a permalink generated, the window's URL
@@ -16,7 +10,25 @@ to the clipboard if possible, rather than the ID.
 
 Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlemage Brewery](https://www.battlemagebrewing.com/) in Vista, CA.
 
+## Screenshots
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/spell-button.png)
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/actor.png)
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/item.png)
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/journal.png)
+
 ## Changelog
+
+### v1.1
+
+- v1.1.0:
+    - Fix issue (#1) that could cause an exception to be thrown if the ID permalink wasn't found.
+    - Change default mode of operation to a new "Permalink button.
+
+### v1.0
 
 - v1.0.5: Fix issue where settings would not load on game launch.
 - v1.0.4: Add settings: useSlugs (scope world, default true) and overrideCopyId (scope user, default true). These let you tune whether slugs should be enabled on a world basis, and whether individual users should default to the existing behavior of copying the ID instead of the permalink.
