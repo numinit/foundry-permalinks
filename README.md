@@ -25,13 +25,15 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 ### v1.1
 
 - v1.1.0:
-    - [#1](https://github.com/numinit/foundry-permalinks/pull/1): Exception could be thrown if the ID permalink wasn't found
-    - Change default mode of operation to a new "Permalink" button.
+    - [#1](https://github.com/numinit/foundry-permalinks/pull/1): Exception could be thrown if the document ID link wasn't found.
+    - Change default mode of operation to a new "Permalink" button:
+        - Deprecate `overrideCopyId` setting
+        - Add setting `copyMode` (scope user, default `newButton`). Options are `none`, `overrideCopyId`, `shiftOverrideCopyId`, and `newButton`.
 
 ### v1.0
 
 - v1.0.5: Fix issue where settings would not load on game launch.
-- v1.0.4: Add settings: useSlugs (scope world, default true) and overrideCopyId (scope user, default true). These let you tune whether slugs should be enabled on a world basis, and whether individual users should default to the existing behavior of copying the ID instead of the permalink.
+- v1.0.4: Add settings: `useSlugs` (scope world, default true) and `overrideCopyId` (scope user, default true). These let you tune whether slugs should be enabled on a world basis, and whether individual users should default to the existing behavior of copying the ID instead of the permalink.
 - v1.0.3: Increase max slug length to 48
 - v1.0.2: Add slugs
 - v1.0.1: Increase reliability of generating links
