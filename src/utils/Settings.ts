@@ -44,7 +44,7 @@ class Settings {
                     [CopyMode.NONE]: 'None',
                     [CopyMode.OVERRIDE_COPY_ID]: 'Override Copy ID',
                     [CopyMode.SHIFT_OVERRIDE_COPY_ID]: 'Shift + Copy ID',
-                    [CopyMode.NEW_BUTTON]: 'New Button'
+                    [CopyMode.NEW_BUTTON]: 'Button'
                 },
                 default: CopyMode.NEW_BUTTON
             }
@@ -69,6 +69,17 @@ class Settings {
                 hint: 'Add a slug (e.g. #Short-Page-Title) to permalinks. Applies to the entire world.',
                 config: true,
                 default: true
+            }
+        ],
+        [
+            Setting.BUTTON_HINT_TEXT,
+            {
+                name: 'Permalink Hint',
+                scope: 'world',
+                type: String,
+                hint: 'Hint text displayed in the Permalink button if Button mode is selected. Applies to the entire world. You can make this empty if you want a minimalistic icon for permalinks instead.',
+                config: true,
+                default: 'Permalink'
             }
         ]
     ]);
@@ -172,7 +183,12 @@ export enum Setting {
     /**
      * Use slugs in permalinks.
      */
-    USE_SLUG = 'useSlug'
+    USE_SLUG = 'useSlug',
+
+    /**
+     * Hint text for button mode.
+     */
+    BUTTON_HINT_TEXT = 'buttonHintText'
 }
 
 /**
