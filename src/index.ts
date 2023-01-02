@@ -83,13 +83,13 @@ Hooks.once("ready", async () => {
  * @param buttons the buttons
  */
 const callback = (sheet: any, buttons: any) => {
-    if (getSetting(Setting.COPY_MODE) !== CopyMode.NEW_BUTTON) {
+    const copyMode: CopyMode = getSetting(Setting.COPY_MODE);
+    if (copyMode !== CopyMode.NEW_BUTTON) {
         return;
     }
 
     buttons.unshift({
-        label: "Permalink",
-        class: "export-pdf",
+        label: getSetting(Setting.BUTTON_HINT_TEXT) || '',
         icon: "fas fa-link",
         onclick: () => {
             // Ensure that the URL is correct before copying.
@@ -116,7 +116,7 @@ const originalDocumentIdLink = (DocumentSheet.prototype as any)._createDocumentI
     const ret: any = originalDocumentIdLink.call(this, html);
 
     const copyMode: CopyMode = getSetting(Setting.COPY_MODE);
-    let node: Node | undefined = html.find('.document-id-link').get(0);
+    let node: Node | undefined = html.find('.document-id-link')?.get(0);
     if (node) {
         if (copyMode === CopyMode.OVERRIDE_COPY_ID
             || copyMode === CopyMode.SHIFT_OVERRIDE_COPY_ID) {

@@ -3,16 +3,27 @@
 [Manifest URL](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json)
 
 **TL;DR:** When you open a window that can have a permalink generated, the window's URL
-is replaced with the link. Clicking the "Copy document id" link or the button (depending on
-configuration) copies the permalink to the clipboard if possible, rather than the ID.
+is replaced with the link. Clicking the "Copy document id" link (top left of windows)
+or the button (depending on configuration) copies the permalink to the clipboard if possible,
+rather than the ID.
 
 **Supported versions**: Requires Foundry 10 to work.
+
+**License**: Version 1.1.1 and above is released under the MIT License.
 
 Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlemage Brewery](https://www.battlemagebrewing.com/) in Vista, CA.
 
 ## Screenshots
 
+### Button hint set to "Permalink"
+
 ![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/spell-button.png)
+
+### No hint text
+
+![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/creature-button-empty.png)
+
+### Generated URLs
 
 ![](https://raw.githubusercontent.com/numinit/foundry-permalinks/master/img/actor.png)
 
@@ -24,6 +35,11 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 
 ### v1.1
 
+- v1.1.1
+    - Relicense under MIT License to allow code and standards reuse with Foundry VTT.
+    - Allow users to change the "Permalink" text shown in Button mode.
+        - Add setting `buttonHintText` (scope world, default 'Permalink').
+    - Remove leftover class that caused issues when used with the PDF Sheet Export module.
 - v1.1.0:
     - [#1](https://github.com/numinit/foundry-permalinks/pull/1): Exception could be thrown if the document ID link wasn't found.
     - Change default mode of operation to a new "Permalink" button:
@@ -41,12 +57,12 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 
 ## Known issues
 
-Login trashes the permalink. :-(
-
-Unfortunately, I can't run code on the login page.
-I try to detect if the referring page had a permalink in it though -
-unfortunately all query parameters are thrown out on the redirect
-from /game to /join. This will require a Foundry VTT backend change to fix.
+- Login trashes the permalink. Unfortunately, I can't run code on the login page.
+  I try to detect if the referring page had a permalink in it though -
+  unfortunately all query parameters are thrown out on the redirect
+  from /game to /join. This will require a Foundry VTT backend change to fix.
+  An [issue](https://github.com/foundryvtt/foundryvtt/issues/8687) has been opened.
+- Automatic copying with the clipboard may [only work over HTTPS connections](https://w3c.github.io/clipboard-apis/#dom-navigator-clipboard).
 
 ## Workaround if you're using nginx
 
@@ -76,7 +92,7 @@ location @join_redirect {
 
 ```
 
-Or, a full [NixOS](https://nixos.org) config:
+Or, a full [NixOS](https://nixos.org) config that requests a certificate via Let's Encrypt:
 
 ```nix
 virtualHosts."foundry.example.com" = {
