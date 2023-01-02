@@ -1,6 +1,6 @@
 {
 	"name": "foundry-permalinks",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Add permalinks to Foundry.",
 	"main": "index.js",
 	"scripts": {
