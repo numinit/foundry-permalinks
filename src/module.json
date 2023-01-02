@@ -2,7 +2,7 @@
 	"name": "foundry-permalinks",
 	"title": "Foundry Permalinks",
 	"description": "Adds permalinks to dialogs in Foundry.",
-	"version": "1.1.1",
+	"version": "1.1.2",
 	"authors": ["numinit"],
 	"scripts": ["bundle.js"],
 	"styles": [
@@ -15,5 +15,5 @@
 	},
 	"url": "https://github.com/numinit/foundry-permalinks",
 	"manifest": "https://raw.githubusercontent.com/numinit/foundry-permalinks/master/src/module.json",
-	"download": "https://raw.githubusercontent.com/numinit/foundry-permalinks/v1.1.1/dist/foundry-permalinks-v1.1.1.zip"
+	"download": "https://raw.githubusercontent.com/numinit/foundry-permalinks/v1.1.2/dist/foundry-permalinks-v1.1.2.zip"
 }
