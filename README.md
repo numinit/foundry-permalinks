@@ -11,7 +11,16 @@ rather than the ID.
 
 **License**: Version 1.1.1 and above is released under the MIT License.
 
+**Also check out**: [nix-foundryvtt](https://github.com/reckenrode/nix-foundryvtt), a NixOS flake for running Foundry
+
 Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlemage Brewery](https://www.battlemagebrewing.com/) in Vista, CA.
+
+## Known issues
+
+- **Important note:** For permalinks to work when a user isn't logged in, a reverse proxy change
+  is necessary so 302 replies for Foundry login redirects include query parameters.
+  See the bottom of this document for more details. An [issue](https://github.com/foundryvtt/foundryvtt/issues/8687) has been opened.
+- Links to particular pages of journal entries may not work.
 
 ## Screenshots
 
@@ -35,6 +44,15 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 
 ### v1.1
 
+- v1.1.2
+    - Use Foundry's ClipboardHelper API introduced in version 10.286, if possible.
+      This allows copying the link to work regardless of whether Foundry is being accessed
+      over TLS or not.
+    - Better UI feedback when copying permalinks by using the normal Copy ID messages.
+    - Require Shift+Right Click if Shift+Copy ID mode is chosen, for consistency.
+    - Fix a possible exception thrown inside Foundry by adding a mandatory class to the Permalink button.
+    - Fix a possible exception thrown if document does not have a UUID for some reason.
+    - Fix a possible case where an opening window would not change the URL.
 - v1.1.1
     - Relicense under MIT License to allow code and standards reuse with Foundry VTT.
     - Allow users to change the "Permalink" text shown in Button mode.
@@ -55,16 +73,7 @@ Developed for [Meadiocrity Mead](https://www.meadiocritymead.com/) and [Battlema
 - v1.0.1: Increase reliability of generating links
 - v1.0.0: Initial release
 
-## Known issues
-
-- Login trashes the permalink. Unfortunately, I can't run code on the login page.
-  I try to detect if the referring page had a permalink in it though -
-  unfortunately all query parameters are thrown out on the redirect
-  from /game to /join. This will require a Foundry VTT backend change to fix.
-  An [issue](https://github.com/foundryvtt/foundryvtt/issues/8687) has been opened.
-- Automatic copying with the clipboard may [only work over HTTPS connections](https://w3c.github.io/clipboard-apis/#dom-navigator-clipboard).
-
-## Workaround if you're using nginx
+## Login workaround if you're using nginx
 
 If you're running a reverse proxy in front of Foundry, we can make it work.
 The essence of the config is the following:

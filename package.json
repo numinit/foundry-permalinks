@@ -56,5 +56,6 @@
 		"socket.io-parser": "^4.2.1",
 		"decode-uri-component": "^0.2.1",
 		"tinymce": "^5.10.7"
-	}
+	},
+	"dependencies": {}
 }
