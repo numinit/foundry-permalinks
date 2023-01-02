@@ -11,7 +11,7 @@
 		"clean": "gulp clean && gulp link --clean"
 	},
 	"author": "numinit",
-	"license": "GPL-3.0",
+	"license": "MIT",
 	"devDependencies": {
 		"@babel/core": "^7.20.7",
 		"@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
